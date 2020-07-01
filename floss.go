@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 
+	"bbonfim.com/floss/boleto"
 	"bbonfim.com/floss/config"
 	"bbonfim.com/floss/headers"
 )
@@ -18,11 +19,11 @@ func main() {
 		log.Fatalf("Unable to retrieve messages: %v", err)
 	}
 
-	fmt.Println("Msg: %i", len(z.Messages))
+	fmt.Println("Messages: %i", len(z.Messages))
 	for _, m := range z.Messages {
 		msg, _ := srv.Users.Messages.Get(user, m.Id).Fields().Format("full").Do()
-		fmt.Println(msg.Id)
 		headers.PrintSubject(msg.Payload.Headers)
+		boleto.ExtractCode(msg, srv, user)
 	}
 
 }
